@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:just_audio_platform_interface/mux_config.dart';
 
 import 'just_audio_platform_interface.dart';
 
@@ -222,5 +223,11 @@ class MethodChannelAudioPlayer extends AudioPlayerPlatform {
     return AndroidEqualizerBandSetGainResponse.fromMap(
         (await _channel.invokeMethod<Map<dynamic, dynamic>>(
             'androidEqualizerBandSetGain', request.toMap()))!);
+  }
+
+  @override
+  Future<void> setupMux(MuxConfig muxConfig) async {
+    await _channel.invokeMethod<Map<dynamic, dynamic>>(
+        'setupMux', muxConfig.toMap());
   }
 }

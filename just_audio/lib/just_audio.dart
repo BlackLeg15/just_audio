@@ -8,6 +8,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio_platform_interface/just_audio_platform_interface.dart';
+import 'package:just_audio_platform_interface/mux_config.dart';
 import 'package:meta/meta.dart' show experimental;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -784,6 +785,15 @@ class AudioPlayer {
       // This will implicitly load the current audio source.
       return await _setPlatformActive(true);
     }
+  }
+
+  Future<void> setupMux(MuxConfig muxConfig) async {
+    if (_disposed) return;
+    if (_audioSource == null) {
+      throw Exception('Must set AudioSource before setup mux');
+    }
+    final platform = await _platform;
+    await platform.setupMux(muxConfig);
   }
 
   void _broadcastSequence() {

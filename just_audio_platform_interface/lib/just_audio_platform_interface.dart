@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'method_channel_just_audio.dart';
+import 'mux_config.dart';
 
 /// The interface that implementations of just_audio must implement.
 ///
@@ -221,6 +222,12 @@ abstract class AudioPlayerPlatform {
       AndroidEqualizerBandSetGainRequest request) {
     throw UnimplementedError(
         "androidEqualizerBandSetGain() has not been implemented.");
+  }
+
+  Future<void> setupMux(MuxConfig muxConfig){
+    throw UnimplementedError(
+        "setupMux() has not been implemented.");
+
   }
 }
 
