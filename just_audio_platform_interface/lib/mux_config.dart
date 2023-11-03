@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 class MuxConfig {
   /// constructor
   const MuxConfig({
+    required this.remoteUrl,
     required this.envKey,
     required this.playerName,
     this.viewerUserId,
@@ -30,6 +31,8 @@ class MuxConfig {
     this.customData1,
     this.customData2,
   });
+
+  final String remoteUrl;
 
   /// Your env key from the Mux dashboard. Note this was previously named property_key
   final String envKey;
@@ -104,7 +107,7 @@ class MuxConfig {
 
   /// An optional detail that allows you to compare different CDNs (assuming the CDN selection is made at page load time).
   final String? videoCdn;
-  
+
   /// An optional data strongly related to the customers of Mux. #1 Custom Data.
   final String? customData1;
 
@@ -113,6 +116,7 @@ class MuxConfig {
 
   Map<dynamic, dynamic> toMap() {
     return <dynamic, dynamic>{
+      'remoteUrl': remoteUrl,
       'envKey': envKey,
       'playerName': playerName,
       'viewerUserId': viewerUserId,
@@ -140,34 +144,66 @@ class MuxConfig {
 
   factory MuxConfig.fromMap(Map<dynamic, dynamic> map) {
     return MuxConfig(
+      remoteUrl: map['remoteUrl'] as String,
       envKey: map['envKey'] as String,
       playerName: map['playerName'] as String,
-      viewerUserId: map['viewerUserId'] != null ? map['viewerUserId'] as String : null,
-      pageType: map['pageType'] != null ? MuxPageType.values.firstWhere((element) => element.name == map['pageType']): null,
-      experimentName: map['experimentName'] != null ? map['experimentName'] as String : null,
-      subPropertyId: map['subPropertyId'] != null ? map['subPropertyId'] as String : null,
-      playerVersion: map['playerVersion'] != null ? map['playerVersion'] as String : null,
-      playerInitTime: map['playerInitTime'] != null ? DateTime.fromMillisecondsSinceEpoch(map['playerInitTime'] as int) : null,
+      viewerUserId:
+          map['viewerUserId'] != null ? map['viewerUserId'] as String : null,
+      pageType: map['pageType'] != null
+          ? MuxPageType.values
+              .firstWhere((element) => element.name == map['pageType'])
+          : null,
+      experimentName: map['experimentName'] != null
+          ? map['experimentName'] as String
+          : null,
+      subPropertyId:
+          map['subPropertyId'] != null ? map['subPropertyId'] as String : null,
+      playerVersion:
+          map['playerVersion'] != null ? map['playerVersion'] as String : null,
+      playerInitTime: map['playerInitTime'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['playerInitTime'] as int)
+          : null,
       videoId: map['videoId'] != null ? map['videoId'] as String : null,
-      videoTitle: map['videoTitle'] != null ? map['videoTitle'] as String : null,
-      videoSeries: map['videoSeries'] != null ? map['videoSeries'] as String : null,
-      videoVariantName: map['videoVariantName'] != null ? map['videoVariantName'] as String : null,
-      videoVariantId: map['videoVariantId'] != null ? map['videoVariantId'] as String : null,
-      videoLanguageCode: map['videoLanguageCode'] != null ? map['videoLanguageCode'] as String : null,
-      videoContentType: map['videoContentType'] != null ? map['videoContentType'] as String : null,
-      videoDuration: map['videoDuration'] != null ? Duration(milliseconds: map['videoDuration'] as int) : null,
-      videoStreamType: map['videoStreamType'] != null ? MuxVideoStreamType.values.firstWhere((e) => e.name == map['videoStreamType']) : null,
-      videoProducer: map['videoProducer'] != null ? map['videoProducer'] as String : null,
-      videoEncodingVariant: map['videoEncodingVariant'] != null ? map['videoEncodingVariant'] as String : null,
+      videoTitle:
+          map['videoTitle'] != null ? map['videoTitle'] as String : null,
+      videoSeries:
+          map['videoSeries'] != null ? map['videoSeries'] as String : null,
+      videoVariantName: map['videoVariantName'] != null
+          ? map['videoVariantName'] as String
+          : null,
+      videoVariantId: map['videoVariantId'] != null
+          ? map['videoVariantId'] as String
+          : null,
+      videoLanguageCode: map['videoLanguageCode'] != null
+          ? map['videoLanguageCode'] as String
+          : null,
+      videoContentType: map['videoContentType'] != null
+          ? map['videoContentType'] as String
+          : null,
+      videoDuration: map['videoDuration'] != null
+          ? Duration(milliseconds: map['videoDuration'] as int)
+          : null,
+      videoStreamType: map['videoStreamType'] != null
+          ? MuxVideoStreamType.values
+              .firstWhere((e) => e.name == map['videoStreamType'])
+          : null,
+      videoProducer:
+          map['videoProducer'] != null ? map['videoProducer'] as String : null,
+      videoEncodingVariant: map['videoEncodingVariant'] != null
+          ? map['videoEncodingVariant'] as String
+          : null,
       videoCdn: map['videoCdn'] != null ? map['videoCdn'] as String : null,
-      customData1: map['customData1'] != null ? map['customData1'] as String : null,
-      customData2: map['customData2'] != null ? map['customData2'] as String : null,
+      customData1:
+          map['customData1'] != null ? map['customData1'] as String : null,
+      customData2:
+          map['customData2'] != null ? map['customData2'] as String : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory MuxConfig.fromJson(String source) => MuxConfig.fromMap(json.decode(source) as Map<dynamic, dynamic>);
+  factory MuxConfig.fromJson(String source) =>
+      MuxConfig.fromMap(json.decode(source) as Map<dynamic, dynamic>);
 }
 
 /// Type of stream to Mux Analytics
