@@ -163,6 +163,9 @@
             result(@{});
         } else if ([@"setAndroidAudioAttributes" isEqualToString:call.method]) {
             result(@{});
+        } else if ([@"setupMux" isEqualToString:call.method]) {
+            [self setupMux:request];
+            result(@{});
         } else {
             result(FlutterMethodNotImplemented);
         }
@@ -171,6 +174,46 @@
         FlutterError *flutterError = [FlutterError errorWithCode:@"error" message:@"Error in handleMethodCall" details:nil];
         result(flutterError);
     }
+}
+
+- (void)setupMux:(NSDictionary *)muxConfig{
+    AVPlayerViewController* playerViewController = [AVPlayerViewController new];
+    playerViewController.player = globalAvPlayer;
+
+    // Environment and player data that persists until the player is destroyed
+      MUXSDKCustomerPlayerData* playerData = [[MUXSDKCustomerPlayerData alloc] initWithEnvironmentKey:muxConfig[@"envKey"]];
+      playerData.playerName = muxConfig[@"playerName"];
+      playerData.viewerUserId = muxConfig[@"viewerUserId"];
+      playerData.experimentName = muxConfig[@"experimentName"];
+      playerData.playerVersion = muxConfig[@"playerVersion"];
+      playerData.pageType = muxConfig[@"pageType"];
+      playerData.subPropertyId = muxConfig[@"subPropertyId"];
+      playerData.playerInitTime = muxConfig[@"playerInitTime"];
+
+      // Video metadata (cleared with videoChangeForPlayer:withVideoData:)
+      MUXSDKCustomerVideoData* videoData = [MUXSDKCustomerVideoData new];
+      videoData.videoId = muxConfig[@"videoId"];
+      videoData.videoTitle = muxConfig[@"videoTitle"];
+      videoData.videoSeries = muxConfig[@"videoSeries"];
+      videoData.videoVariantName = muxConfig[@"videoVariantName"];
+      videoData.videoVariantId = muxConfig[@"videoVariantId"];
+      videoData.videoLanguageCode = muxConfig[@"videoLanguageCode"];
+      videoData.videoContentType = muxConfig[@"videoContentType"];
+      videoData.videoStreamType = muxConfig[@"videoStreamType"];
+      videoData.videoProducer = muxConfig[@"videoProducer"];
+      videoData.videoEncodingVariant = muxConfig[@"videoEncodingVariant"];
+      videoData.videoCdn = muxConfig[@"videoCdn"];
+      videoData.videoDuration = muxConfig[@"videoDuration"];
+      
+      MUXSDKCustomData *customData = [[MUXSDKCustomData alloc] init];
+      [customData setCustomData1:muxConfig[@"customData1"]];
+      [customData setCustomData2:muxConfig[@"customData2"]];
+
+      MUXSDKCustomerData *customerData = [[MUXSDKCustomerData alloc] initWithCustomerPlayerData:playerData videoData:videoData viewData:nil customData:customData viewerData:nil];
+          
+      [MUXSDKStats monitorAVPlayerViewController:playerViewController
+                                  withPlayerName:muxConfig[@"playerName"]
+                                      customerData:customerData];
 }
 
 - (AVQueuePlayer *)player {

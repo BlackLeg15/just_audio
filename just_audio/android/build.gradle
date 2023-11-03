@@ -17,6 +17,9 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
+         maven {
+            url "https://muxinc.jfrog.io/artifactory/default-maven-release-local"
+        }
     }
 }
 
@@ -54,4 +57,5 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-dash:$exoplayer_version"
     implementation "com.google.android.exoplayer:exoplayer-hls:$exoplayer_version"
     implementation "com.google.android.exoplayer:exoplayer-smoothstreaming:$exoplayer_version"
+    api 'com.mux.stats.sdk.muxstats:MuxExoPlayer_r2_18_1:2.9.1'
 }

@@ -45,6 +45,12 @@ import com.google.android.exoplayer2.upstream.DefaultDataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
 import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.exoplayer2.util.Util;
+import com.mux.stats.sdk.core.model.CustomData;
+import com.mux.stats.sdk.core.model.CustomerData;
+import com.mux.stats.sdk.core.model.CustomerPlayerData;
+import com.mux.stats.sdk.core.model.CustomerVideoData;
+import com.mux.stats.sdk.muxstats.MuxStatsExoPlayer;
+
 import io.flutter.Log;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
@@ -134,6 +140,8 @@ public class AudioPlayer implements MethodCallHandler, Player.Listener, Metadata
         }
     };
 
+    private MuxStatsExoPlayer muxStatsExoPlayer;
+
     public AudioPlayer(final Context applicationContext, final BinaryMessenger messenger, final String id, Map<?, ?> audioLoadConfiguration, List<Object> rawAudioEffects, Boolean offloadSchedulingEnabled) {
         this.context = applicationContext;
         this.rawAudioEffects = rawAudioEffects;
@@ -174,6 +182,114 @@ public class AudioPlayer implements MethodCallHandler, Player.Listener, Metadata
                 livePlaybackSpeedControl = builder.build();
             }
         }
+    }
+
+    public boolean isMuxInitialized(){
+        return muxStatsExoPlayer != null;
+    }
+
+    public void setupMux(Map<String, Object> arg) {
+        CustomerPlayerData playerData = new CustomerPlayerData();
+        CustomerVideoData videoData = new CustomerVideoData();
+        CustomData customData = new CustomData();
+
+        CustomerData customerData = new CustomerData();
+
+        playerData.setEnvironmentKey((String) arg.get("envKey"));
+        playerData.setPlayerName((String) arg.get("playerName"));
+
+        String remoteUrl = (String) arg.get("remoteUrl");
+
+        if (remoteUrl != null)
+            videoData.setVideoSourceUrl(remoteUrl);
+
+        String viewerUserId = (String) arg.get("viewerUserId");
+
+        if (viewerUserId != null)
+            playerData.setViewerUserId(viewerUserId);
+
+        String pageType = (String) arg.get("pageType");
+
+        if (pageType != null)
+            playerData.setPageType(pageType);
+
+        String experimentName = (String) arg.get("experimentName");
+
+        if (experimentName != null)
+            playerData.setExperimentName(experimentName);
+
+        String subPropertyId = (String) arg.get("subPropertyId");
+
+        if (subPropertyId != null)
+            playerData.setSubPropertyId(subPropertyId);
+
+        try {
+            Long playerInitTime = Long.valueOf("playerInitTime");
+            playerData.setPlayerInitTime(playerInitTime);
+        } catch (Exception e) {
+            io.flutter.Log.d("Error", "playerInitTime bug");
+        }
+
+        String videoId = (String) arg.get("videoId");
+
+        if (videoId != null)
+            videoData.setVideoId(videoId);
+
+        String videoTitle = (String) arg.get("videoTitle");
+
+        if (videoTitle != null)
+            videoData.setVideoTitle(videoTitle);
+
+        String videoSeries = (String) arg.get("videoSeries");
+
+        if (videoSeries != null)
+            videoData.setVideoSeries(videoSeries);
+
+        String videoContentType = (String) arg.get("videoContentType");
+
+        if (videoContentType != null)
+            videoData.setVideoContentType(videoContentType);
+
+        String videoStreamType = (String) arg.get("videoStreamType");
+
+        if (videoStreamType != null)
+            videoData.setVideoStreamType(videoStreamType);
+
+        String videoProducer = (String) arg.get("videoProducer");
+
+        if (videoProducer != null)
+            videoData.setVideoProducer(videoProducer);
+
+        String videoCdn = (String) arg.get("videoCdn");
+
+        if (videoCdn != null)
+            videoData.setVideoCdn(videoCdn);
+
+        try {
+            Long videoDuration = Long.valueOf("videoDuration");
+            videoData.setVideoDuration(videoDuration);
+        } catch (Exception e) {
+            io.flutter.Log.d("Error", "videoDuration bug");
+        }
+
+        String customData1 = (String) arg.get("customData1");
+
+        if (customData1 != null){
+            customData.setCustomData1(customData1);
+        }
+
+        String customData2 = (String) arg.get("customData2");
+
+        if (customData2 != null){
+            customData.setCustomData2(customData2);
+        }
+
+        customerData.setCustomerVideoData(videoData);
+        customerData.setCustomerPlayerData(playerData);
+        customerData.setCustomData(customData);
+
+        muxStatsExoPlayer = new MuxStatsExoPlayer(context, player,
+                playerData.getPlayerName(), customerData);
     }
 
     private void startWatchingBuffer() {
@@ -418,6 +534,21 @@ public class AudioPlayer implements MethodCallHandler, Player.Listener, Metadata
                         initialPosition == null ? C.TIME_UNSET : initialPosition / 1000,
                         initialIndex, result);
                 break;
+            case "setupMux": {
+                String id = call.argument("id");
+                if (player == null) {
+                    result.error("Platform player " + id + " doesn't exist", null, null);
+                    break;
+                }
+                if(isMuxInitialized()){
+                    result.error("Mux for platform player " + id + " is setup already", null, null);
+                    break;
+                }
+                final HashMap<String, Object> args = call.arguments();
+                setupMux(args);
+                result.success(new HashMap<String, Object>());
+                break;
+            }
             case "play":
                 play(result);
                 break;
@@ -993,6 +1124,9 @@ public class AudioPlayer implements MethodCallHandler, Player.Listener, Metadata
         }
         eventChannel.endOfStream();
         dataEventChannel.endOfStream();
+        if(muxStatsExoPlayer != null){
+            muxStatsExoPlayer.release();
+        }
     }
 
     private void abortSeek() {
