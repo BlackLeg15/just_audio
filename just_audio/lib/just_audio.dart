@@ -2408,7 +2408,7 @@ class ConcatenatingAudioSource extends AudioSource {
         localInitialIndex = ci;
       }
       final childInitialIndex =
-          initialIndexWithinThisChild ? (initialIndex! - si) : null;
+          initialIndexWithinThisChild ? (initialIndex - si) : null;
       child._shuffle(initialIndex: childInitialIndex);
       si += childLength;
     }
