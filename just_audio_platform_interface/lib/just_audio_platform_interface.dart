@@ -5,6 +5,8 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'method_channel_just_audio.dart';
 import 'mux_config.dart';
 
+export 'mux_config.dart';
+
 /// The interface that implementations of just_audio must implement.
 ///
 /// Platform implementations should extend this class rather than implement it
