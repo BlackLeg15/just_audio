@@ -229,7 +229,6 @@ abstract class AudioPlayerPlatform {
   Future<void> setupMux(MuxConfig muxConfig){
     throw UnimplementedError(
         "setupMux() has not been implemented.");
-
   }
 }
 
