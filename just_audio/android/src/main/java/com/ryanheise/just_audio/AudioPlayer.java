@@ -534,7 +534,7 @@ public class AudioPlayer implements MethodCallHandler, Player.Listener, Metadata
                         initialPosition == null ? C.TIME_UNSET : initialPosition / 1000,
                         initialIndex, result);
                 break;
-            case "setupMux": {
+            case "setupMux":
                 String id = call.argument("id");
                 if (player == null) {
                     result.error("Platform player " + id + " doesn't exist", null, null);
@@ -548,7 +548,6 @@ public class AudioPlayer implements MethodCallHandler, Player.Listener, Metadata
                 setupMux(args);
                 result.success(new HashMap<String, Object>());
                 break;
-            }
             case "play":
                 play(result);
                 break;

@@ -8,12 +8,12 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio_platform_interface/just_audio_platform_interface.dart';
-import 'package:just_audio_platform_interface/mux_config.dart';
 import 'package:meta/meta.dart' show experimental;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
+export 'package:just_audio_platform_interface/mux_config.dart';
 
 const _uuid = Uuid();
 

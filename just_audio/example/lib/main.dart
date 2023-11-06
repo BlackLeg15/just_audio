@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_example/common.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:just_audio_platform_interface/just_audio_platform_interface.dart';
 
 void main() => runApp(const MyApp());
 
@@ -46,6 +47,13 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       // AAC example: https://dl.espressif.com/dl/audio/ff-16b-2c-44100hz.aac
       await _player.setAudioSource(AudioSource.uri(Uri.parse(
           "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3")));
+      await _player.setupMux(
+        const MuxConfig(
+          remoteUrl: "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3",
+          envKey: '',
+          playerName: 'Play Name',
+        ),
+      );
     } catch (e) {
       print("Error loading audio source: $e");
     }
