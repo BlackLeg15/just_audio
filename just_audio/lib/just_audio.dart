@@ -792,10 +792,8 @@ class AudioPlayer {
     if (_audioSource == null) {
       throw Exception('Must set AudioSource before setup mux');
     }
-    final platform = await _nativePlatform;
-    if (platform != null) {
-      await platform.setupMux(muxConfig);
-    }
+    final platform = await _platform;
+    await platform.setupMux(muxConfig);
   }
 
   void _broadcastSequence() {
