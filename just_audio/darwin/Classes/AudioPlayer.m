@@ -179,7 +179,7 @@
 
 - (void)setupMux:(NSDictionary *)muxConfig{
     AVPlayerViewController* playerViewController = [AVPlayerViewController new];
-    playerViewController.player = globalAvPlayer;
+    playerViewController.player = _player;
 
     // Environment and player data that persists until the player is destroyed
       MUXSDKCustomerPlayerData* playerData = [[MUXSDKCustomerPlayerData alloc] initWithEnvironmentKey:muxConfig[@"envKey"]];
